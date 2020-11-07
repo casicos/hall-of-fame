@@ -6,7 +6,7 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    titleTemplate: '%s - hall-of-fame',
+    titleTemplate: '차에 타봐 - 길드 레코드',
     title: 'hall-of-fame',
     meta: [
       { charset: 'utf-8' },
