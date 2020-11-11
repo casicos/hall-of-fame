@@ -7,13 +7,15 @@
       </div>
       <v-timeline align-top dense>
         <v-timeline-item
-          v-for="(record, recordIndex) in records.slice(
-            0,
-            this.recordTrackingCount
-          )"
+          v-for="(record, recordIndex) in slicedRecords"
           :key="recordIndex"
-          :color="record.scored > 0 ? 'green' : 'grey'"
-          small
+          :color="
+            record.SCORE >
+            slicedRecords[recordIndex > 0 ? recordIndex - 1 : 0].SCORE
+              ? 'green'
+              : 'grey'
+          "
+          smally
         >
           <div>
             <div class="font-weight-normal">
@@ -69,6 +71,10 @@ export default class RecordCard extends Vue {
       case 5:
         return 'https://cdn.pixabay.com/photo/2017/10/06/14/33/cat-2823286__340.jpg'
     }
+  }
+
+  private get slicedRecords() {
+    return this.records.slice(0, this.recordTrackingCount)
   }
 }
 </script>
