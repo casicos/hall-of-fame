@@ -3,7 +3,7 @@
     <v-img v-if="!dense" height="110" :src="prefixImage($vnode.key)"> </v-img>
     <v-card-text class="mt-2">
       <div class="font-weight-bold headline ml-8">
-        {{ user.name }} <strong>{{ ` #${$vnode.key}` }}</strong>
+        {{ user.NAME }} <strong>{{ ` #${$vnode.key}` }}</strong>
       </div>
       <v-timeline align-top dense>
         <v-timeline-item
@@ -17,11 +17,11 @@
         >
           <div>
             <div class="font-weight-normal">
-              <strong>{{ `+ ${formattedNumber(record.scored)} 점` }}</strong>
+              <strong>{{ `+ ${record.SCORE.toLocaleString()} 점` }}</strong>
             </div>
             <div>
-              {{ formattedNumber(record.accumulated) + ' 점' }}
-              <i>@{{ formattedEventTime(record.eventTime) }}</i>
+              {{ record.ACCUMULATED.toLocaleString() + ' 점' }}
+              <i>@{{ formattedEventTime(record.CREATE_TIME) }}</i>
             </div>
           </div>
         </v-timeline-item>
@@ -33,21 +33,17 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import moment from 'moment'
-import { User, Record as Score, UserId } from '~/database/scheme'
-
-export interface RecordCardScore extends Score {
-  ownerId: UserId
-}
+import { USER, RECORD } from '~/database/scheme'
 
 @Component({
   name: 'RecordCard',
 })
 export default class RecordCard extends Vue {
   @Prop({ default: undefined })
-  private readonly user!: User
+  private readonly user!: USER
 
   @Prop({ default: [] })
-  private readonly records!: Array<Score>
+  private readonly records!: Array<RECORD>
 
   @Prop({ default: false })
   private readonly dense!: boolean
@@ -56,12 +52,8 @@ export default class RecordCard extends Vue {
   private readonly height =
     210 + 70 * this.recordTrackingCount - (this.dense ? 100 : 0)
 
-  private formattedEventTime(eventTime: number) {
+  private formattedEventTime(eventTime: number | string) {
     return moment(eventTime).format('YYYY-MM-DD')
-  }
-
-  private formattedNumber(number: number) {
-    return number.toLocaleString()
   }
 
   private prefixImage(rank: string | number) {

@@ -7,8 +7,10 @@
         )"
         :key="parseInt(todayRecordIndex) + 1"
         class="align-self-center"
-        :user="users[todayRecord.ownerId]"
-        :records="records[config.currentSeason][todayRecord.ownerId]"
+        :user="users.find((user) => user.USER_SEQ === todayRecord.USER_SEQ)"
+        :records="
+          records.filter((record) => record.USER_SEQ === todayRecord.USER_SEQ)
+        "
       />
     </v-row>
     <v-row class="d-flex flex-row justify-space-around flex-wrap">
@@ -16,10 +18,12 @@
         v-for="[todayRecordIndex, todayRecord] of Object.entries(
           todayFollowerRecords
         )"
-        :key="parseInt(todayRecordIndex) + 6"
+        :key="parseInt(todayRecordIndex) + 1"
         class="align-self-center"
-        :user="users[todayRecord.ownerId]"
-        :records="records[config.currentSeason][todayRecord.ownerId]"
+        :user="users.find((user) => user.USER_SEQ === todayRecord.USER_SEQ)"
+        :records="
+          records.filter((record) => record.USER_SEQ === todayRecord.USER_SEQ)
+        "
         :dense="true"
       />
     </v-row>
@@ -29,12 +33,9 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import moment from 'moment'
-import RecordCard, {
-  RecordCardScore,
-} from '~/components/standing/record-card.vue'
+import RecordCard from '~/components/standing/record-card.vue'
 import config from '~/database/config'
-import { users, records } from '~/database/data'
-import { UserId } from '~/database/scheme'
+import { RECORD, USER } from '~/database/scheme'
 
 @Component({
   name: 'standing',
@@ -43,39 +44,46 @@ import { UserId } from '~/database/scheme'
   },
 })
 export default class Standing extends Vue {
-  private readonly config = config
-  private readonly users = users
-  private readonly records = records
   private readonly todayTime =
     moment(moment().format('YYYY-MM-DD')).unix() * 1000
 
+  private users: Array<USER> = []
+  private records: Array<RECORD> = []
+
+  private async created() {
+    this.users = (await this.$axios.get('/users')).data
+    this.records = (
+      await this.$axios.get('/records', {
+        params: {
+          filter: {
+            order: 'CREATE_TIME DESC',
+            where: {
+              SEASON_SEQ: config.SEASON_SEQ_CURRENT,
+            },
+          },
+        },
+      })
+    ).data
+  }
+
   private get todayRecords() {
-    const todayRecords = Object.entries(records[config.currentSeason]).reduce(
-      (acc, userRecords) => {
-        const [user, records] = userRecords
-        const recentRecord = records && records[0]
-        if (recentRecord) {
-          recentRecord.eventTime >= this.todayTime &&
-            (acc[parseInt(user) as UserId] = Object.assign(recentRecord, {
-              ownerId: parseInt(user) as UserId,
-            }))
-        }
-        return acc
-      },
-      {} as Partial<Record<UserId, RecordCardScore>>
-    )
+    const todayRecords = this.records.filter((record) => {
+      const recordTime =
+        moment(moment(record.CREATE_TIME).format()).unix() * 1000
+      return recordTime >= this.todayTime
+    })
 
     const ret = Object.values(todayRecords)
-    ret.sort((a, b) => b!.accumulated - a!.accumulated)
+    ret.sort((a: RECORD, b: RECORD) => b!.ACCUMULATED - a!.ACCUMULATED)
 
     return ret
   }
 
-  private get todayLeaderRecords() {
+  private get todayLeaderRecords(): RECORD[] {
     return this.todayRecords.slice(0, 5)
   }
 
-  private get todayFollowerRecords() {
+  private get todayFollowerRecords(): RECORD[] {
     return this.todayRecords.slice(5)
   }
 }

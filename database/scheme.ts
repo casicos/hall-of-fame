@@ -41,24 +41,21 @@ export enum UserState {
   Escaped,
 }
 
-export interface Record {
-  scored: number
-  accumulated: number
-  manualTime: string
-  eventTime: number
+export interface RECORD {
+  RECORD_SEQ: number
+  USER_SEQ: number
+  ACCUMULATED: number
+  SCORE: number
+  CREATE_TIME: string
+  REMARK?: string
 }
 
-export interface Season {
-  sequence: number
-  records: Array<Record>
-}
-
-export interface User {
-  id: UserId
-  name: string
-  seasons: Array<Season>
-  headerTitleIndex: number
-  titles: Array<UserTitle>
-  warning: number
-  state: UserState
+export interface USER {
+  USER_SEQ: number
+  USER_STATE_SEQ: number
+  USER_TITLE_SEQ: number
+  NAME: string
+  SCORE: string
+  CREATE_TIME: string
+  UPDATE_TIME: string
 }

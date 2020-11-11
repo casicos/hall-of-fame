@@ -13,7 +13,7 @@ export const records: {
   5: {
     [UserId.천사]: [
       {
-        accumulated: 3525000,
+        accumulated: 3987089,
         manualTime: '2020-11-07',
         scored: 0,
         eventTime: 0,
@@ -39,7 +39,7 @@ export const records: {
     ],
     [UserId.송아지]: [
       {
-        accumulated: 3063557,
+        accumulated: 3098324,
         manualTime: '2020-11-07',
         scored: 0,
         eventTime: 0,
@@ -750,7 +750,7 @@ export const users: Record<UserId, User> = {
     seasons: [],
     headerTitleIndex: 0,
     titles: [UserTitle.Newbie],
-    warning: 0,
+    warning: 1,
     state: UserState.Participated,
   },
   [UserId.황인욱]: {

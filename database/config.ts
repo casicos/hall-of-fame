@@ -1,9 +1,9 @@
 export interface Config {
-  currentSeason: number
+  SEASON_SEQ_CURRENT: number
 }
 
 const config: Config = {
-  currentSeason: 5,
+  SEASON_SEQ_CURRENT: 2,
 }
 
 export default config
