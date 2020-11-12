@@ -1,8 +1,14 @@
 <template>
-  <v-card class="ma-2 prefix" width="325" :height="height" elevation="2">
+  <v-card
+    class="ma-2 prefix"
+    width="325"
+    :height="height"
+    elevation="2"
+    rounded="xl"
+  >
     <v-img v-if="!dense" height="110" :src="prefixImage($vnode.key)"> </v-img>
     <v-card-text class="mt-2">
-      <div class="font-weight-bold headline ml-8">
+      <div class="font-weight-bold title ml-8">
         {{ user.NAME }} <strong>{{ ` #${$vnode.key}` }}</strong>
       </div>
       <v-timeline align-top dense>
@@ -56,10 +62,10 @@ export default class RecordCard extends Vue {
 
   private readonly recordTrackingCount = this.dense ? 2 : 3
   private readonly height =
-    210 + 70 * this.recordTrackingCount - (this.dense ? 100 : 0)
+    190 + 75 * this.recordTrackingCount - (this.dense ? 100 : 0)
 
   private formattedEventTime(eventTime: number | string) {
-    return moment(eventTime).format('YYYY-MM-DD')
+    return moment(eventTime).utc().format('YYYY-MM-DD')
   }
 
   private prefixImage(rank: string | number) {
