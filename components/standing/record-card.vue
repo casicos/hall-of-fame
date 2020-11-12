@@ -11,7 +11,11 @@
           :key="recordIndex"
           :color="
             record.SCORE >
-            slicedRecords[recordIndex > 0 ? recordIndex - 1 : 0].SCORE
+            records[
+              recordIndex < records.length - 1
+                ? recordIndex + 1
+                : records.length - 1
+            ].SCORE
               ? 'green'
               : 'grey'
           "
